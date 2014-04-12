@@ -24,6 +24,20 @@ namespace Ore.Chaika
             return sum / count;
         }
 
+        public static Vector<double> Variance(this IEnumerable<Vector<double>> vectors)
+        {
+            var mean = vectors.Mean();
+            Vector<double> sum = new DenseVector(mean.Count);
+            var count = 0;
+            foreach (var vector in vectors)
+            {
+                var d = vector - mean;
+                sum += d.PointwiseMultiply(d);
+                count++;
+            }
+            return sum / count;
+        }
+
         public static Matrix<double> Covariance(this IEnumerable<Vector<double>> vectors)
         {
             var mean = vectors.Mean();
@@ -39,8 +53,15 @@ namespace Ore.Chaika
                         sum[row, col] += d[row] * d[col];
                     }
                 }
+                count++;
             }
             return sum.Divide(count);
+        }
+
+        public static Vector<double> Normalizer(this IEnumerable<Vector<double>> vectors)
+        {
+            var variance = vectors.Variance();
+            return DenseVector.OfEnumerable(variance.Select(x => 1 / Math.Sqrt(x)));
         }
     }
 }

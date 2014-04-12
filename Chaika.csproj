@@ -48,6 +48,7 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cepstrum.cs" />
     <Compile Include="src\Csv.cs" />
     <Compile Include="src\Dsp.cs" />
     <Compile Include="src\Linq.cs" />

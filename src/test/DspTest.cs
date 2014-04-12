@@ -131,6 +131,14 @@ internal static class DspTest
         Csv.Write("PowerTest.csv", power1, power2, power3);
     }
 
+    internal static void CutoffTest()
+    {
+        var spectra = Enumerable.Range(0, 16).Select(x => new Complex(x, x * x)).ToArray();
+        var cut1 = spectra.Cutoff(2);
+        var cut2 = spectra.Cutoff(4);
+        Csv.Write("CutoffTest.csv", spectra.Real(), spectra.Imag(), cut1.Real(), cut1.Imag(), cut2.Real(), cut2.Imag());
+    }
+
     private static string ArrayToString<T>(T[] array)
     {
         if (array.Length == 0)

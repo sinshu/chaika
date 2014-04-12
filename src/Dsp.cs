@@ -185,5 +185,17 @@ namespace Ore.Chaika
         {
             return stft.Select(x => x.IftReal().HannWindow()).OverlapAdd(frameShift).Skip(frameLength - frameShift).Scale(4 / 1.5 / (frameLength / frameShift));
         }
+
+        public static Complex[] Cutoff(this Complex[] spectra, int ratio)
+        {
+            var cut = new Complex[spectra.Length / ratio];
+            cut[0] = spectra[0];
+            for (var i = 1; i <= cut.Length / 2; i++)
+            {
+                cut[i] = spectra[i];
+                cut[cut.Length - i] = spectra[spectra.Length - i];
+            }
+            return cut;
+        }
     }
 }
