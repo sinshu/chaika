@@ -113,7 +113,7 @@ namespace Ore.Chaika
             return copy;
         }
 
-        public static double[] IftReal(this Complex[] spectra)
+        public static double[] IftRe(this Complex[] spectra)
         {
             var frame = Ift(spectra);
             var real = new double[spectra.Length];
@@ -136,7 +136,7 @@ namespace Ore.Chaika
             return copy;
         }
 
-        public static double[] Real(this Complex[] spectra)
+        public static double[] Re(this Complex[] spectra)
         {
             var real = new double[spectra.Length];
             for (var i = 0; i < spectra.Length; i++)
@@ -146,7 +146,7 @@ namespace Ore.Chaika
             return real;
         }
 
-        public static double[] Imag(this Complex[] spectra)
+        public static double[] Im(this Complex[] spectra)
         {
             var imag = new double[spectra.Length];
             for (var i = 0; i < spectra.Length; i++)
@@ -183,7 +183,7 @@ namespace Ore.Chaika
 
         public static IEnumerable<double> Istft(this IEnumerable<Complex[]> stft, int frameLength, int frameShift)
         {
-            return stft.Select(x => x.IftReal().HannWindow()).OverlapAdd(frameShift).Skip(frameLength - frameShift).Scale(4 / 1.5 / (frameLength / frameShift));
+            return stft.Select(x => x.IftRe().HannWindow()).OverlapAdd(frameShift).Skip(frameLength - frameShift).Scale(4 / 1.5 / (frameLength / frameShift));
         }
 
         public static Complex[] Cutoff(this Complex[] spectra, int ratio)

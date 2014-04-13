@@ -23,7 +23,7 @@ namespace Ore.Chaika
 
         public static double[] ToCoefficients(Complex[] spectra, int cutoffRatio)
         {
-            return ToLogSpectra(spectra, cutoffRatio).FT().Real();
+            return ToLogSpectra(spectra, cutoffRatio).FT().Re();
         }
 
         public static Vector<double> ToVector(Complex[] spectra, int cutoffRatio, int order, bool includeZerothCoefficient)
@@ -58,7 +58,7 @@ namespace Ore.Chaika
                     temp[length - i - 1] = vector[i];
                 }
             }
-            return temp.IftReal();
+            return temp.IftRe();
         }
     }
 }

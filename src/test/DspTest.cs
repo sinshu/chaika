@@ -73,12 +73,12 @@ internal static class DspTest
         var spectra1 = frame1.FT();
         var spectra2 = frame2.FT();
         var spectra3 = frame3.FT();
-        var real1 = spectra1.Real();
-        var imag1 = spectra1.Imag();
-        var real2 = spectra2.Real();
-        var imag2 = spectra2.Imag();
-        var real3 = spectra3.Real();
-        var imag3 = spectra3.Imag();
+        var real1 = spectra1.Re();
+        var imag1 = spectra1.Im();
+        var real2 = spectra2.Re();
+        var imag2 = spectra2.Im();
+        var real3 = spectra3.Re();
+        var imag3 = spectra3.Im();
         Csv.Write("FTTest1.csv", frame1, real1, imag1, frame2, real2, imag2, frame3, real3, imag3);
     }
 
@@ -90,28 +90,28 @@ internal static class DspTest
         var spectra1 = frame1.FT();
         var spectra2 = frame2.FT();
         var spectra3 = frame3.FT();
-        var real1 = spectra1.Real();
-        var imag1 = spectra1.Imag();
-        var real2 = spectra2.Real();
-        var imag2 = spectra2.Imag();
-        var real3 = spectra3.Real();
-        var imag3 = spectra3.Imag();
-        Csv.Write("FTTest2.csv", frame1.Real(), real1, imag1, frame2.Real(), real2, imag2, frame3.Real(), real3, imag3);
+        var real1 = spectra1.Re();
+        var imag1 = spectra1.Im();
+        var real2 = spectra2.Re();
+        var imag2 = spectra2.Im();
+        var real3 = spectra3.Re();
+        var imag3 = spectra3.Im();
+        Csv.Write("FTTest2.csv", frame1.Re(), real1, imag1, frame2.Re(), real2, imag2, frame3.Re(), real3, imag3);
     }
 
-    internal static void IftRealTest()
+    internal static void IftReTest()
     {
-        var frame1 = Enumerable.Range(0, 64).Select(x => Math.Sin(2 * Math.PI * x / 8)).ToArray().FT().IftReal();
-        var frame2 = Enumerable.Range(0, 64).Select(x => Math.Cos(2 * Math.PI * x / 8)).ToArray().FT().IftReal();
-        var frame3 = Enumerable.Range(0, 64).Select(x => x == 0 ? 1.0 : 0.0).ToArray().FT().IftReal();
-        Csv.Write("IftRealTest.csv", frame1, frame2, frame3);
+        var frame1 = Enumerable.Range(0, 64).Select(x => Math.Sin(2 * Math.PI * x / 8)).ToArray().FT().IftRe();
+        var frame2 = Enumerable.Range(0, 64).Select(x => Math.Cos(2 * Math.PI * x / 8)).ToArray().FT().IftRe();
+        var frame3 = Enumerable.Range(0, 64).Select(x => x == 0 ? 1.0 : 0.0).ToArray().FT().IftRe();
+        Csv.Write("IftReTest.csv", frame1, frame2, frame3);
     }
 
     internal static void IftTest()
     {
-        var frame1 = Enumerable.Range(0, 64).Select(x => Math.Sin(2 * Math.PI * x / 8)).ToArray().FT().Ift().Real();
-        var frame2 = Enumerable.Range(0, 64).Select(x => Math.Cos(2 * Math.PI * x / 8)).ToArray().FT().Ift().Real();
-        var frame3 = Enumerable.Range(0, 64).Select(x => x == 0 ? 1.0 : 0.0).ToArray().FT().Ift().Real();
+        var frame1 = Enumerable.Range(0, 64).Select(x => Math.Sin(2 * Math.PI * x / 8)).ToArray().FT().Ift().Re();
+        var frame2 = Enumerable.Range(0, 64).Select(x => Math.Cos(2 * Math.PI * x / 8)).ToArray().FT().Ift().Re();
+        var frame3 = Enumerable.Range(0, 64).Select(x => x == 0 ? 1.0 : 0.0).ToArray().FT().Ift().Re();
         Csv.Write("IftTest.csv", frame1, frame2, frame3);
     }
 
@@ -136,7 +136,7 @@ internal static class DspTest
         var spectra = Enumerable.Range(0, 16).Select(x => new Complex(x, x * x)).ToArray();
         var cut1 = spectra.Cutoff(2);
         var cut2 = spectra.Cutoff(4);
-        Csv.Write("CutoffTest.csv", spectra.Real(), spectra.Imag(), cut1.Real(), cut1.Imag(), cut2.Real(), cut2.Imag());
+        Csv.Write("CutoffTest.csv", spectra.Re(), spectra.Im(), cut1.Re(), cut1.Im(), cut2.Re(), cut2.Im());
     }
 
     private static string ArrayToString<T>(T[] array)
