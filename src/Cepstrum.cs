@@ -10,9 +10,9 @@ namespace Ore.Chaika
 {
     public static class Cepstrum
     {
-        public static double[] ToLogSpectra(Complex[] spectra, int cutoffRatio)
+        public static double[] ToLogSpectrum(Complex[] spectrum, int cutoffRatio)
         {
-            var power = spectra.Cutoff(cutoffRatio).Power();
+            var power = spectrum.Cutoff(cutoffRatio).Power();
             var log = new double[power.Length];
             for (var i = 0; i < power.Length; i++)
             {
@@ -21,24 +21,24 @@ namespace Ore.Chaika
             return log;
         }
 
-        public static double[] ToCoefficients(Complex[] spectra, int cutoffRatio)
+        public static double[] ToCoefficients(Complex[] spectrum, int cutoffRatio)
         {
-            return ToLogSpectra(spectra, cutoffRatio).FT().Re();
+            return ToLogSpectrum(spectrum, cutoffRatio).Fft().Real();
         }
 
-        public static Vector<double> ToVector(Complex[] spectra, int cutoffRatio, int order, bool includeZerothCoefficient)
+        public static Vector<double> ToVector(Complex[] spectrum, int cutoffRatio, int order, bool includeZerothCoefficient)
         {
             if (includeZerothCoefficient)
             {
-                return DenseVector.OfEnumerable(ToCoefficients(spectra, cutoffRatio).Take(order));
+                return DenseVector.OfEnumerable(ToCoefficients(spectrum, cutoffRatio).Take(order));
             }
             else
             {
-                return DenseVector.OfEnumerable(ToCoefficients(spectra, cutoffRatio).Skip(1).Take(order));
+                return DenseVector.OfEnumerable(ToCoefficients(spectrum, cutoffRatio).Skip(1).Take(order));
             }
         }
 
-        public static double[] RestoreLogSpectra(Vector<double> vector, int length, bool includesZerothCoefficient)
+        public static double[] RestoreLogSpectrum(Vector<double> vector, int length, bool includesZerothCoefficient)
         {
             var temp = new Complex[length];
             if (includesZerothCoefficient)
@@ -58,7 +58,7 @@ namespace Ore.Chaika
                     temp[length - i - 1] = vector[i];
                 }
             }
-            return temp.IftRe();
+            return temp.IfftReal();
         }
     }
 }

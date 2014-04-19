@@ -48,6 +48,8 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\trash\Ave.cs" />
+    <Compile Include="src\trash\Lms.cs" />
     <Compile Include="src\Cepstrum.cs" />
     <Compile Include="src\Csv.cs" />
     <Compile Include="src\Dsp.cs" />

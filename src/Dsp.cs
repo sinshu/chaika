@@ -8,6 +8,14 @@ namespace Ore.Chaika
 {
     public static class Dsp
     {
+        public static IEnumerable<double> Zeros()
+        {
+            while (true)
+            {
+                yield return 0;
+            }
+        }
+
         public static IEnumerable<double> Zeros(int length)
         {
             return Enumerable.Repeat(0.0, length);
@@ -84,7 +92,7 @@ namespace Ore.Chaika
             return windowed;
         }
 
-        public static Complex[] FT(this double[] frame)
+        public static Complex[] Fft(this double[] frame)
         {
             var copy = new Complex[frame.Length];
             for (var i = 0; i < frame.Length; i++)
@@ -100,7 +108,7 @@ namespace Ore.Chaika
             return copy;
         }
 
-        public static Complex[] FT(this Complex[] frame)
+        public static Complex[] Fft(this Complex[] frame)
         {
             var copy = new Complex[frame.Length];
             Array.Copy(frame, copy, frame.Length);
@@ -113,87 +121,119 @@ namespace Ore.Chaika
             return copy;
         }
 
-        public static double[] IftRe(this Complex[] spectra)
+        public static double[] IfftReal(this Complex[] spectrum)
         {
-            var frame = Ift(spectra);
-            var real = new double[spectra.Length];
-            for (var i = 0; i < spectra.Length; i++)
+            var frame = Ifft(spectrum);
+            var real = new double[spectrum.Length];
+            for (var i = 0; i < spectrum.Length; i++)
             {
                 real[i] = frame[i].Real;
             }
             return real;
         }
 
-        public static Complex[] Ift(this Complex[] spectra)
+        public static Complex[] Ifft(this Complex[] spectrum)
         {
-            var copy = new Complex[spectra.Length];
-            Array.Copy(spectra, copy, spectra.Length);
+            var copy = new Complex[spectrum.Length];
+            Array.Copy(spectrum, copy, spectrum.Length);
             Transform.FourierInverse(copy, FourierOptions.NoScaling);
-            for (var i = 0; i < spectra.Length; i++)
+            for (var i = 0; i < spectrum.Length; i++)
             {
                 copy[i] /= 2;
             }
             return copy;
         }
 
-        public static double[] Re(this Complex[] spectra)
+        public static Complex[] Half(this Complex[] mirrored)
         {
-            var real = new double[spectra.Length];
-            for (var i = 0; i < spectra.Length; i++)
+            var halfLength = mirrored.Length / 2 + 1;
+            var half = new Complex[halfLength];
+            Array.Copy(mirrored, half, halfLength);
+            return half;
+        }
+
+        public static Complex[] Mirror(this Complex[] half)
+        {
+            var mirroredLength = 2 * (half.Length - 1);
+            var mirrored = new Complex[mirroredLength];
+            mirrored[0] = half[0];
+            for (var i = 1; i < half.Length - 1; i++)
             {
-                real[i] = spectra[i].Real;
+                mirrored[i] = half[i];
+                mirrored[mirroredLength - i] = new Complex(half[i].Real, -half[i].Imaginary);
+            }
+            mirrored[half.Length - 1] = half[half.Length - 1];
+            return mirrored;
+        }
+
+        public static double[] Real(this Complex[] spectrum)
+        {
+            var real = new double[spectrum.Length];
+            for (var i = 0; i < spectrum.Length; i++)
+            {
+                real[i] = spectrum[i].Real;
             }
             return real;
         }
 
-        public static double[] Im(this Complex[] spectra)
+        public static double[] Imag(this Complex[] spectrum)
         {
-            var imag = new double[spectra.Length];
-            for (var i = 0; i < spectra.Length; i++)
+            var imag = new double[spectrum.Length];
+            for (var i = 0; i < spectrum.Length; i++)
             {
-                imag[i] = spectra[i].Imaginary;
+                imag[i] = spectrum[i].Imaginary;
             }
             return imag;
         }
 
-        public static double[] Amplitude(this Complex[] spectra)
+        public static double[] Amplitude(this Complex[] spectrum)
         {
-            var amplitude = new double[spectra.Length];
-            for (var i = 0; i < spectra.Length; i++)
+            var amplitude = new double[spectrum.Length];
+            for (var i = 0; i < spectrum.Length; i++)
             {
-                amplitude[i] = spectra[i].Magnitude;
+                amplitude[i] = spectrum[i].Magnitude;
             }
             return amplitude;
         }
 
-        public static double[] Power(this Complex[] spectra)
+        public static double[] Power(this Complex[] spectrum)
         {
-            var power = new double[spectra.Length];
-            for (var i = 0; i < spectra.Length; i++)
+            var power = new double[spectrum.Length];
+            for (var i = 0; i < spectrum.Length; i++)
             {
-                power[i] = spectra[i].Real * spectra[i].Real + spectra[i].Imaginary * spectra[i].Imaginary;
+                power[i] = spectrum[i].Real * spectrum[i].Real + spectrum[i].Imaginary * spectrum[i].Imaginary;
             }
             return power;
         }
 
         public static IEnumerable<Complex[]> Stft(this IEnumerable<double> samples, int frameLength, int frameShift)
         {
-            return ToFrames(samples, frameLength, frameShift).Select(frame => frame.HannWindow().FT());
+            return ToFrames(samples, frameLength, frameShift).Select(frame => frame.HannWindow().Fft());
         }
 
         public static IEnumerable<double> Istft(this IEnumerable<Complex[]> stft, int frameLength, int frameShift)
         {
-            return stft.Select(x => x.IftRe().HannWindow()).OverlapAdd(frameShift).Skip(frameLength - frameShift).Scale(4 / 1.5 / (frameLength / frameShift));
+            return stft.Select(x => x.IfftReal().HannWindow()).OverlapAdd(frameShift).Skip(frameLength - frameShift).Scale(4 / 1.5 / (frameLength / frameShift));
         }
 
-        public static Complex[] Cutoff(this Complex[] spectra, int ratio)
+        public static IEnumerable<Complex[]> StftHalf(this IEnumerable<double> samples, int frameLength, int frameShift)
         {
-            var cut = new Complex[spectra.Length / ratio];
-            cut[0] = spectra[0];
+            return ToFrames(samples, frameLength, frameShift).Select(frame => frame.HannWindow().Fft().Half());
+        }
+
+        public static IEnumerable<double> IstftHalf(this IEnumerable<Complex[]> stft, int frameLength, int frameShift)
+        {
+            return stft.Select(x => x.Mirror().IfftReal().HannWindow()).OverlapAdd(frameShift).Skip(frameLength - frameShift).Scale(4 / 1.5 / (frameLength / frameShift));
+        }
+
+        public static Complex[] Cutoff(this Complex[] spectrum, int ratio)
+        {
+            var cut = new Complex[spectrum.Length / ratio];
+            cut[0] = spectrum[0];
             for (var i = 1; i <= cut.Length / 2; i++)
             {
-                cut[i] = spectra[i];
-                cut[cut.Length - i] = spectra[spectra.Length - i];
+                cut[i] = spectrum[i];
+                cut[cut.Length - i] = spectrum[spectrum.Length - i];
             }
             return cut;
         }
