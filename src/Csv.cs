@@ -15,10 +15,9 @@ namespace Ore.Chaika
             {
                 var enumerators = data.Select(x => x.GetEnumerator()).ToArray();
                 var hasItem = Enumerable.Repeat(true, data.Length).ToArray();
-                var hasAtLeastOneItem = true;
-                while (hasAtLeastOneItem)
+                while (true)
                 {
-                    hasAtLeastOneItem = false;
+                    bool hasAtLeastOneItem = false;
                     for (var i = 0; i < data.Length; i++)
                     {
                         if (hasItem[i])
@@ -34,6 +33,7 @@ namespace Ore.Chaika
                             }
                         }
                     }
+                    if (!hasAtLeastOneItem) break;
                     if (hasItem[0])
                     {
                         writer.Write(enumerators[0].Current);

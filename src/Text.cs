@@ -13,7 +13,10 @@ namespace Ore.Chaika
             using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             using (var reader = new StreamReader(stream, Settings.Encoding))
             {
-                yield return reader.ReadLine();
+                for (var line = reader.ReadLine(); line != null; line = reader.ReadLine())
+                {
+                    yield return line;
+                }
             }
         }
 
