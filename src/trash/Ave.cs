@@ -113,7 +113,7 @@ namespace Ore.Chaika
             var fftSize = GetMinPot(2 * length);
             var spectra1 = samples1.Concat(Dsp.Zeros()).Take(fftSize).ToArray().Fft();
             var spectra2 = samples2.Concat(Dsp.Zeros()).Take(fftSize).ToArray().Fft();
-            var corr = spectra1.Zip(spectra2, (x, y) => y * new Complex(x.Real, -x.Imaginary)).ToArray().IfftReal();
+            var corr = spectra1.Zip(spectra2, (x, y) => y * new Complex(x.Real, -x.Imaginary)).ToArray().Ifft().Real();
             var lag = GetIndexOfMaxValue(corr);
             if (lag >= length)
             {

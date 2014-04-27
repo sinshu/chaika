@@ -99,14 +99,6 @@ internal static class DspTest
         Csv.Write("FftTest2.csv", frame1.Real(), real1, imag1, frame2.Real(), real2, imag2, frame3.Real(), real3, imag3);
     }
 
-    internal static void IfftReTest()
-    {
-        var frame1 = Enumerable.Range(0, 64).Select(x => Math.Sin(2 * Math.PI * x / 8)).ToArray().Fft().IfftReal();
-        var frame2 = Enumerable.Range(0, 64).Select(x => Math.Cos(2 * Math.PI * x / 8)).ToArray().Fft().IfftReal();
-        var frame3 = Enumerable.Range(0, 64).Select(x => x == 0 ? 1.0 : 0.0).ToArray().Fft().IfftReal();
-        Csv.Write("IfftReTest.csv", frame1, frame2, frame3);
-    }
-
     internal static void IfftTest()
     {
         var frame1 = Enumerable.Range(0, 64).Select(x => Math.Sin(2 * Math.PI * x / 8)).ToArray().Fft().Ifft().Real();

@@ -34,5 +34,46 @@ namespace Ore.Chaika
                 }
             }
         }
+
+        public static void Write(string fileName, int sampleRate, params IEnumerable<double>[] samples)
+        {
+            var format = new WaveFormat(sampleRate, 16, samples.Length);
+            using (var writer = new WaveFileWriter(fileName, format))
+            {
+                var enumerators = samples.Select(x => x.GetEnumerator()).ToArray();
+                var hasSample = Enumerable.Repeat(true, samples.Length).ToArray();
+                while (true)
+                {
+                    bool hasAtLeastOneSample = false;
+                    for (var i = 0; i < samples.Length; i++)
+                    {
+                        if (hasSample[i])
+                        {
+                            if (enumerators[i].MoveNext())
+                            {
+                                hasAtLeastOneSample = true;
+                            }
+                            else
+                            {
+                                enumerators[i].Dispose();
+                                hasSample[i] = false;
+                            }
+                        }
+                    }
+                    if (!hasAtLeastOneSample) break;
+                    for (var i = 0; i < samples.Length; i++)
+                    {
+                        if (hasSample[i])
+                        {
+                            writer.WriteSample((float)enumerators[i].Current);
+                        }
+                        else
+                        {
+                            writer.WriteSample(0f);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

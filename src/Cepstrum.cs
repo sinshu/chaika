@@ -58,7 +58,7 @@ namespace Ore.Chaika
                     temp[length - i - 1] = vector[i];
                 }
             }
-            return temp.IfftReal();
+            return temp.Ifft().Real();
         }
     }
 }

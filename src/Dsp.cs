@@ -21,27 +21,27 @@ namespace Ore.Chaika
             return Enumerable.Repeat(0.0, length);
         }
 
-        public static IEnumerable<double> Scale(this IEnumerable<double> samples, double scaling)
+        public static IEnumerable<double> Scale(this IEnumerable<double> samples, double factor)
         {
-            return samples.Select(x => scaling * x);
+            return samples.Select(x => factor * x);
         }
 
-        public static IEnumerable<double[]> ToFrames(this IEnumerable<double> samples, int length, int shift)
+        public static IEnumerable<double[]> ToFrames(this IEnumerable<double> samples, int frameLength, int frameShift)
         {
-            var buffer = new double[length];
+            var buffer = new double[frameLength];
             var bufferEdgeIndex = 0;
             var sampleCount = 0;
-            foreach (var sample in samples.Concat(Zeros(length - 1)))
+            foreach (var sample in samples.Concat(Zeros(frameLength - 1)))
             {
                 buffer[bufferEdgeIndex] = sample;
-                bufferEdgeIndex = (bufferEdgeIndex + 1) % length;
+                bufferEdgeIndex = (bufferEdgeIndex + 1) % frameLength;
                 sampleCount++;
-                if (sampleCount == shift)
+                if (sampleCount == frameShift)
                 {
-                    var frame = new double[length];
-                    for (var i = 0; i < length; i++)
+                    var frame = new double[frameLength];
+                    for (var i = 0; i < frameLength; i++)
                     {
-                        frame[i] = buffer[(bufferEdgeIndex + i) % length];
+                        frame[i] = buffer[(bufferEdgeIndex + i) % frameLength];
                     }
                     yield return frame;
                     sampleCount = 0;
@@ -49,7 +49,7 @@ namespace Ore.Chaika
             }
         }
 
-        public static IEnumerable<double> OverlapAdd(this IEnumerable<double[]> frames, int shift)
+        public static IEnumerable<double> OverlapAdd(this IEnumerable<double[]> frames, int frameShift)
         {
             double[] buffer = null;
             var bufferEdgeIndex = 0;
@@ -59,23 +59,23 @@ namespace Ore.Chaika
                 {
                     buffer = new double[frame.Length];
                 }
-                for (int i = 0; i < buffer.Length - shift; i++)
+                for (var i = 0; i < buffer.Length - frameShift; i++)
                 {
                     var j = (bufferEdgeIndex + i) % buffer.Length;
                     buffer[j] += frame[i];
-                    if (i < shift)
+                    if (i < frameShift)
                     {
                         yield return buffer[j];
                     }
                 }
-                for (var i = buffer.Length - shift; i < buffer.Length; i++)
+                for (var i = buffer.Length - frameShift; i < buffer.Length; i++)
                 {
                     var j = (bufferEdgeIndex + i) % buffer.Length;
                     buffer[j] = frame[i];
                 }
-                bufferEdgeIndex = (bufferEdgeIndex + shift) % buffer.Length;
+                bufferEdgeIndex = (bufferEdgeIndex + frameShift) % buffer.Length;
             }
-            for (var i = 0; i < buffer.Length - shift; i++)
+            for (var i = 0; i < buffer.Length - frameShift; i++)
             {
                 var j = (bufferEdgeIndex + i) % buffer.Length;
                 yield return buffer[j];
@@ -119,17 +119,6 @@ namespace Ore.Chaika
                 copy[i] /= halfLength;
             }
             return copy;
-        }
-
-        public static double[] IfftReal(this Complex[] spectrum)
-        {
-            var frame = Ifft(spectrum);
-            var real = new double[spectrum.Length];
-            for (var i = 0; i < spectrum.Length; i++)
-            {
-                real[i] = frame[i].Real;
-            }
-            return real;
         }
 
         public static Complex[] Ifft(this Complex[] spectrum)
@@ -213,7 +202,7 @@ namespace Ore.Chaika
 
         public static IEnumerable<double> Istft(this IEnumerable<Complex[]> stft, int frameLength, int frameShift)
         {
-            return stft.Select(x => x.IfftReal().HannWindow()).OverlapAdd(frameShift).Skip(frameLength - frameShift).Scale(4 / 1.5 / (frameLength / frameShift));
+            return stft.Select(spectrum => spectrum.Ifft().Real().HannWindow()).OverlapAdd(frameShift).Skip(frameLength - frameShift).Scale(4 / 1.5 / (frameLength / frameShift));
         }
 
         public static IEnumerable<Complex[]> StftHalf(this IEnumerable<double> samples, int frameLength, int frameShift)
@@ -223,7 +212,7 @@ namespace Ore.Chaika
 
         public static IEnumerable<double> IstftHalf(this IEnumerable<Complex[]> stft, int frameLength, int frameShift)
         {
-            return stft.Select(x => x.Mirror().IfftReal().HannWindow()).OverlapAdd(frameShift).Skip(frameLength - frameShift).Scale(4 / 1.5 / (frameLength / frameShift));
+            return stft.Select(spectrum => spectrum.Mirror().Ifft().Real().HannWindow()).OverlapAdd(frameShift).Skip(frameLength - frameShift).Scale(4 / 1.5 / (frameLength / frameShift));
         }
 
         public static Complex[] Cutoff(this Complex[] spectrum, int ratio)
