@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Dir.cs" />
+    <Compile Include="src\trash\Ats.cs" />
     <Compile Include="src\trash\Ave.cs" />
     <Compile Include="src\trash\Lms.cs" />
     <Compile Include="src\Cepstrum.cs" />

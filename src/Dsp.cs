@@ -138,6 +138,7 @@ namespace Ore.Chaika
             var halfLength = mirrored.Length / 2 + 1;
             var half = new Complex[halfLength];
             Array.Copy(mirrored, half, halfLength);
+            half[0] /= 2;
             return half;
         }
 
@@ -145,7 +146,7 @@ namespace Ore.Chaika
         {
             var mirroredLength = 2 * (half.Length - 1);
             var mirrored = new Complex[mirroredLength];
-            mirrored[0] = half[0];
+            mirrored[0] = 2 * half[0];
             for (var i = 1; i < half.Length - 1; i++)
             {
                 mirrored[i] = half[i];
@@ -193,6 +194,16 @@ namespace Ore.Chaika
                 power[i] = spectrum[i].Real * spectrum[i].Real + spectrum[i].Imaginary * spectrum[i].Imaginary;
             }
             return power;
+        }
+
+        public static double[] Phase(this Complex[] spectrum)
+        {
+            var phase = new double[spectrum.Length];
+            for (var i = 0; i < spectrum.Length; i++)
+            {
+                phase[i] = spectrum[i].Phase;
+            }
+            return phase;
         }
 
         public static IEnumerable<Complex[]> Stft(this IEnumerable<double> samples, int frameLength, int frameShift)

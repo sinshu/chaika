@@ -7,6 +7,6 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        Console.WriteLine("うぃ");
+        Ats.Test2();
     }
 }

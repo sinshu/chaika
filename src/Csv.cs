@@ -8,7 +8,7 @@ namespace Ore.Chaika
 {
     public static class Csv
     {
-        public static void Write(string fileName, params IEnumerable<double>[] data)
+        public static void Write<T>(string fileName, params IEnumerable<T>[] data)
         {
             using (var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write))
             using (var writer = new StreamWriter(stream, Settings.Encoding))
@@ -36,14 +36,14 @@ namespace Ore.Chaika
                     if (!hasAtLeastOneItem) break;
                     if (hasItem[0])
                     {
-                        writer.Write(enumerators[0].Current);
+                        writer.Write(enumerators[0].Current.ToString());
                     }
                     for (var i = 1; i < data.Length; i++)
                     {
                         writer.Write(",");
                         if (hasItem[i])
                         {
-                            writer.Write(enumerators[i].Current);
+                            writer.Write(enumerators[i].Current.ToString());
                         }
                     }
                     writer.WriteLine();
