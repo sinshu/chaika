@@ -38,7 +38,8 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="MathNet.Numerics">
+    <Reference Include="MathNet.Numerics, Version=2.6.1.30, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>.\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="NAudio">
@@ -49,9 +50,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Dir.cs" />
-    <Compile Include="src\trash\Ats.cs" />
-    <Compile Include="src\trash\Ave.cs" />
-    <Compile Include="src\trash\Lms.cs" />
     <Compile Include="src\Cepstrum.cs" />
     <Compile Include="src\Csv.cs" />
     <Compile Include="src\Dsp.cs" />
@@ -59,7 +57,7 @@
     <Compile Include="src\test\StatsTest.cs" />
     <Compile Include="src\test\CsvTest.cs" />
     <Compile Include="src\test\DspTest.cs" />
-    <Compile Include="src\Settings.cs" />
+    <Compile Include="src\ChaikaSettings.cs" />
     <Compile Include="src\Stats.cs" />
     <Compile Include="src\test\Program.cs" />
     <Compile Include="src\Text.cs" />

@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Ore.Chaika
 {
-    public static class Settings
+    public static class ChaikaSettings
     {
         private static Encoding encoding = Encoding.GetEncoding("Shift_JIS");
 

@@ -99,7 +99,7 @@ namespace Ore.Chaika
             {
                 copy[i] = frame[i];
             }
-            Transform.FourierForward(copy, FourierOptions.NoScaling);
+            Fourier.Forward(copy, FourierOptions.NoScaling);
             var halfLength = frame.Length / 2;
             for (var i = 0; i < frame.Length; i++)
             {
@@ -112,7 +112,7 @@ namespace Ore.Chaika
         {
             var copy = new Complex[frame.Length];
             Array.Copy(frame, copy, frame.Length);
-            Transform.FourierForward(copy, FourierOptions.NoScaling);
+            Fourier.Forward(copy, FourierOptions.NoScaling);
             var halfLength = frame.Length / 2;
             for (var i = 0; i < frame.Length; i++)
             {
@@ -125,7 +125,7 @@ namespace Ore.Chaika
         {
             var copy = new Complex[spectrum.Length];
             Array.Copy(spectrum, copy, spectrum.Length);
-            Transform.FourierInverse(copy, FourierOptions.NoScaling);
+            Fourier.Inverse(copy, FourierOptions.NoScaling);
             for (var i = 0; i < spectrum.Length; i++)
             {
                 copy[i] /= 2;

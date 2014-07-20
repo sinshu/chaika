@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using MathNet.Numerics.IntegralTransforms;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace Ore.Chaika
 {
@@ -38,10 +38,10 @@ namespace Ore.Chaika
             }
         }
 
-        public static double[] RestoreLogSpectrum(Vector<double> vector, int length, bool includesZerothCoefficient)
+        public static double[] RestoreLogSpectrum(Vector<double> vector, int length, bool zerothCoefficientIncluded)
         {
             var temp = new Complex[length];
-            if (includesZerothCoefficient)
+            if (zerothCoefficientIncluded)
             {
                 temp[0] = vector[0];
                 for (var i = 1; i < vector.Count; i++)

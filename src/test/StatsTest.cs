@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra.Generic;
 using Ore.Chaika;
 
 internal static class StatsTest
@@ -73,7 +73,7 @@ internal static class StatsTest
         Console.WriteLine(normalizer);
         Console.WriteLine(ToScilabCode(vectors.Select(x => normalizer.PointwiseMultiply(x - mean))));
         Console.WriteLine(vectors.Select(x => normalizer.PointwiseMultiply(x - mean)).Mean());
-        Console.WriteLine(vectors.Select(x => normalizer.PointwiseMultiply(x - mean)).Variance());
+        Console.WriteLine(vectors.Select(x => normalizer.PointwiseMultiply(x - mean)).MeanVariance());
     }
 
     private static string ToScilabCode(IEnumerable<Vector<double>> vectors)

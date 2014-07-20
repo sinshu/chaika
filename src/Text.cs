@@ -11,7 +11,7 @@ namespace Ore.Chaika
         public static IEnumerable<string> ReadLines(string fileName)
         {
             using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
-            using (var reader = new StreamReader(stream, Settings.Encoding))
+            using (var reader = new StreamReader(stream, ChaikaSettings.Encoding))
             {
                 for (var line = reader.ReadLine(); line != null; line = reader.ReadLine())
                 {
@@ -23,7 +23,7 @@ namespace Ore.Chaika
         public static void WriteLines(string fileName, IEnumerable<string> lines)
         {
             using (var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write))
-            using (var writer = new StreamWriter(stream, Settings.Encoding))
+            using (var writer = new StreamWriter(stream, ChaikaSettings.Encoding))
             {
                 foreach (var line in lines)
                 {

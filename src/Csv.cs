@@ -11,7 +11,7 @@ namespace Ore.Chaika
         public static void Write<T>(string fileName, params IEnumerable<T>[] data)
         {
             using (var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write))
-            using (var writer = new StreamWriter(stream, Settings.Encoding))
+            using (var writer = new StreamWriter(stream, ChaikaSettings.Encoding))
             {
                 var enumerators = data.Select(x => x.GetEnumerator()).ToArray();
                 var hasItem = Enumerable.Repeat(true, data.Length).ToArray();

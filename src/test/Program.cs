@@ -7,6 +7,6 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        Ats.Test2();
+        StatsTest.CovarianceTest();
     }
 }

@@ -7,18 +7,29 @@ namespace Ore.Chaika
 {
     public static class Wave
     {
-        public static IEnumerable<double> Read(string fileName)
+        public static IEnumerable<double> ReadMono(string fileName)
         {
-            return Read(fileName, 0);
+            return ReadMono(fileName, 0);
         }
 
-        public static IEnumerable<double> Read(string fileName, int channel)
+        public static IEnumerable<double> ReadMono(string fileName, int channel)
         {
             using (var reader = new WaveFileReader(fileName))
             {
                 for (var block = reader.ReadNextSampleFrame(); block != null; block = reader.ReadNextSampleFrame())
                 {
                     yield return block[channel];
+                }
+            }
+        }
+
+        public static IEnumerable<Tuple<double, double>> ReadStereo(string fileName)
+        {
+            using (var reader = new WaveFileReader(fileName))
+            {
+                for (var block = reader.ReadNextSampleFrame(); block != null; block = reader.ReadNextSampleFrame())
+                {
+                    yield return Tuple.Create((double)block[0], (double)block[1]);
                 }
             }
         }
